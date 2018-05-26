@@ -4,6 +4,10 @@ import {  View, Text, FlatList, Image} from 'react-native';
 import {
 	RkStyleSheet, RkCard, RkText, RkButton, RkTheme
 } from 'react-native-ui-kitten'
+import {NavigationActions} from 'react-navigation'
+
+import firebase from 'react-native-firebase'
+const HistoryDB = firebase.database().ref('/laporan')
 
 import Icon from 'react-native-vector-icons/FontAwesome'
 
@@ -15,21 +19,39 @@ export default class History extends Component {
 	  super(props)
 	
 	  this.state = {
-		 data : [{
-			key : '1',
-			judul : 'Pungli Ambil Uang Jajan Anak Anak',
-			image : 'https://cdn.pixabay.com/photo/2017/07/11/19/15/landscape-2494720_960_720.jpg',
-			time : '2018-09-03',
-			type : 'image'
-		},{
-			key : '1',
-			judul : 'Pungli Ambil Uang Jajan Anak Anak',
-			image : 'https://cdn.pixabay.com/photo/2017/07/11/19/15/landscape-2494720_960_720.jpg',
-			time : '2018-09-03'
-		}]
+		 data : []
 	  };
 	};
 	
+	getData() {
+		HistoryDB.on('value', (value) => {
+			let x = []
+			let k = 0
+			value.forEach((v) => {
+				let data = v.val()
+				x.push({
+					key : k.toString(),
+					judul : data.judul,
+					assetLink : data.assetLink,
+					type : 'image',
+					time : data.created_at,
+					status : data.status
+				})
+
+				k += 1
+			})
+
+			this.setState({data : x})
+			// alert(JSON.stringify(x))
+			// let v = value.val()
+			// alert(JSON.stringify(value.toJSON()))
+		})
+	}
+
+	componentDidMount() {
+		this.getData()
+	}
+
 	_keyExtractor(post, index) {
 		return post.key;
 	}
@@ -41,7 +63,7 @@ export default class History extends Component {
 				style={styles.card}>
 				<Image
 					rkCardImg
-					source={{ uri : info.item.image}}/>
+					source={{ uri : info.item.assetLink}}/>
 				
 				<View rkCardContent style={styles.overlay}>
 					<View style={{paddingRight : 10}}>
@@ -58,7 +80,7 @@ export default class History extends Component {
 
 						<RkText
 							rkType="label primary">
-							Di Terima
+							{info.item.status}
 						</RkText>
 					</View>
 				</View>

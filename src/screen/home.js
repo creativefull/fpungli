@@ -23,12 +23,19 @@ class HomeApp extends Component {
 	})
 
 	onLogout() {
-		Firebase.auth().signOut().then(() => {
-			alert('Berhasil Logout')
-			this.props.navigation.navigate('Splash')
-		}).catch((e) => {
-			Alert.alert('Error', e.message)
-		})
+		Alert.alert('Warning', 'Apakah Yakin Ingin Keluar ?', [{
+			text : 'TIDAK',
+			onPress : () => {}
+		}, {
+			text : 'YA, KELUAR',
+			onPress : () => {
+				Firebase.auth().signOut().then(() => {
+					this.props.navigation.navigate('Splash')
+				}).catch((e) => {
+					Alert.alert('Error', e.message)
+				})
+			}
+		}])
 	}
 
 	componentDidMount() {
@@ -50,7 +57,8 @@ class HomeApp extends Component {
 			onPress : () => this.pindahMenu('History')
 		},{
 			label : 'AKUN SAYA',
-			icon : (<Icon name="user" size={50} color="#0067B0" />)
+			icon : (<Icon name="user" size={50} color="#0067B0" />),
+			onPress : () => this.pindahMenu('AccountPage')
 		},{
 			label : 'ABOUT',
 			icon : (<Icon name="warning" size={50} color="#0067B0" />)
@@ -76,6 +84,7 @@ import LaporScreen from './lapor_screen'
 import History from './history'
 import MapLocation from './maps_location'
 import FormLapor from './formLapor'
+import AccountPage from './account'
 
 export default StackNavigator({
 	HomeApp : {
@@ -92,6 +101,9 @@ export default StackNavigator({
 	},
 	MapLocation : {
 		screen : MapLocation
+	},
+	AccountPage : {
+		screen : AccountPage
 	}
 }, {
 	initialRouteName : 'HomeApp'

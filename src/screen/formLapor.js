@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import {  View, Text, ScrollView, Dimensions, AsyncStorage} from 'react-native';
+import {  View, Text, ScrollView, Dimensions, AsyncStorage, Alert} from 'react-native';
 import {
 	RkCard, RkTextInput, RkText, RkButton
 } from 'react-native-ui-kitten'
+import firebase from 'react-native-firebase'
+import {NavigationActions} from 'react-navigation'
 
+const HistoryDB = firebase.database().ref('/laporan')
 const {width, height} = Dimensions.get('screen')
 
 export default class FormLapor extends Component {
@@ -22,7 +25,10 @@ export default class FormLapor extends Component {
 		 location : {
 			 latitude : 0,
 			 longitude : 0
-		 }
+		 },
+		 judul : '',
+		 status : 'pending',
+		 created_at : new Date()
 	  };
 	};
 	
@@ -31,7 +37,47 @@ export default class FormLapor extends Component {
 		const location = JSON.parse(xlocation)
 
 		const assetLink = await AsyncStorage.getItem('dataImage')
+		if (assetLink) {
+			this.setState({
+				type : 'image'
+			})
+		}
+		
 		this.setState({ location, assetLink })
+	}
+
+	submitLaporan() {
+		let newChild = HistoryDB.push()
+		const {alamat, judul, diskripsi, assetLink, type, location, status, created_at} = this.state
+
+		if (judul == '' && alamat == '') {
+			Alert.alert('Warning', 'Mohon Lengkapi Laporan Anda!')
+		} else {
+			newChild.set({
+				judul : judul,
+				alamat : alamat,
+				diskripsi : diskripsi,
+				assetLink : assetLink,
+				type : type,
+				location : location,
+				status : status,
+				created_at : created_at
+			})
+
+			Alert.alert('Success', 'Terimakasih Sudah Mengirim Laporan, Kami Segera Menanggapi')
+			const {navigation} = this.props
+			navigation.dispatch(
+				NavigationActions.reset({
+					index : 0,
+					key : null,
+					actions : [
+						NavigationActions.navigate({
+							routeName : 'HomeApp'
+						})
+					]						
+				})
+			)
+		}
 	}
 
 	componentDidMount() {
@@ -43,14 +89,20 @@ export default class FormLapor extends Component {
 			<ScrollView style={{padding : 10}}>
 				<RkCard>
 					<View rkCardContent>
+						<RkText>Judul</RkText>
+						<RkTextInput rkType="rounded" onChangeText={(judul) => this.setState({judul})}/>
+
 						<RkText>Alamat Lengkap / Lokasi</RkText>
-						<RkText>{JSON.stringify(this.state)}</RkText>
-						<RkTextInput rkType="rounded"/>
+						<RkTextInput rkType="rounded" onChangeText={(alamat) => this.setState({alamat})}/>
 		
 						<RkText>Diskripsi</RkText>
-						<RkTextInput multiline={true} style={{height : 100, borderWidth: 1,borderColor: '#CCC', borderRadius: 20,}}/>
+						<RkTextInput
+							onChangeText={(diskripsi) => this.setState({diskripsi})}						
+							multiline={true}
+							style={{height : 100, borderWidth: 1,borderColor: '#CCC', borderRadius: 20,}}/>
 
 						<RkButton
+							onPress={this.submitLaporan.bind(this)}
 							rkType="rounded full primary xlarge">KIRIM LAPORAN</RkButton>
 					</View>
 				</RkCard>

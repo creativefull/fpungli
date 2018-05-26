@@ -1,0 +1,15 @@
+[{
+	"type" : "image",
+	"uri" : "",
+	"judul" : "Pungli Di Sekitar Matahari Mall",
+	"diskripsi" : "Pungli ini meminta bayaran parkir yang berlebihan",
+	"alamat" : "Jln Gembilang Nomor 3",
+	"location" : {
+		"latitude" : 0,
+		"longitude" : 0
+	},
+	"user_id" : "xxxxxxxxxx",
+	"created_at" : "2018-05-04 22:00:00",
+	"status" : "pending",
+	"catatan" : "Tidak Di Terima"
+}]
