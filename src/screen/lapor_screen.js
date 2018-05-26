@@ -50,6 +50,8 @@ export default class LaporScreen extends Component {
 
 						this.props.navigation.navigate('FormLapor')
 					})
+				}).catch((e) => {
+					alert("Error: " + e.message)
 				})
 			}
 		})
