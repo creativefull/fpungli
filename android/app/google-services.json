@@ -1,0 +1,117 @@
+{
+  "project_info": {
+    "project_number": "236228809469",
+    "firebase_url": "https://creativefull-latihan.firebaseio.com",
+    "project_id": "creativefull-latihan",
+    "storage_bucket": "creativefull-latihan.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236228809469:android:849f726a1a3f465b",
+        "android_client_info": {
+          "package_name": "com.creativefull.pungliliar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236228809469-7ov562j68gmlu4vanp134q6ldsc0e6sg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_s-1cjUgU2HZpGc6NzDx7rrGNW3gBPHg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236228809469:android:fee18710d91632eb",
+        "android_client_info": {
+          "package_name": "com.djsnake"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236228809469-7ov562j68gmlu4vanp134q6ldsc0e6sg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_s-1cjUgU2HZpGc6NzDx7rrGNW3gBPHg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236228809469:android:fd78caa9d0c93623",
+        "android_client_info": {
+          "package_name": "com.gcoin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236228809469-egvo5mdijr88njqbn47am759bfnb1tsj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gcoin",
+            "certificate_hash": "197ffbb23dd85c203d09147400cc39ff1b834b0e"
+          }
+        },
+        {
+          "client_id": "236228809469-7ov562j68gmlu4vanp134q6ldsc0e6sg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_s-1cjUgU2HZpGc6NzDx7rrGNW3gBPHg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "236228809469-7ov562j68gmlu4vanp134q6ldsc0e6sg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
