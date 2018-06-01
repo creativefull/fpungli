@@ -40,8 +40,8 @@ export default class Splash extends Component {
 	render() {
 		if (this.state.loaded) {
 			if (this.state.loggedIn) {
-				// return <Home/>
-				return <HomeAdmin/>
+				return <Home/>
+				// return <HomeAdmin/>
 			} else {
 				return <Login {...this.props} onLogin={(loggedIn) => this.setState({loggedIn})}/>
 			}
