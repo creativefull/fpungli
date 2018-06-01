@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import {  View, Text, Image } from 'react-native';
 import Firebase from 'react-native-firebase';
 import Home from './home'
+import HomeAdmin from './admin'
 import Login from './login'
 
 export default class Splash extends Component {
 	static navigationOptions = {
 		header : null
 	}
+
 	constructor(props) {
 	  super(props)
 	
@@ -38,7 +40,8 @@ export default class Splash extends Component {
 	render() {
 		if (this.state.loaded) {
 			if (this.state.loggedIn) {
-				return <Home/>
+				// return <Home/>
+				return <HomeAdmin/>
 			} else {
 				return <Login {...this.props} onLogin={(loggedIn) => this.setState({loggedIn})}/>
 			}

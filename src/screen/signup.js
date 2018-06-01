@@ -48,7 +48,7 @@ export default class Signup extends Component {
 			if (password != cpassword) {
 				return Alert.alert('Error', 'Konfirmasi Password Tidak Cocok')
 			}
-
+			
 			Firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.state.email, this.state.password).then((result) => {
 				// alert(JSON.stringify(result))
 				Firebase.auth().onAuthStateChanged((user) => {
