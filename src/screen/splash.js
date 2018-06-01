@@ -15,7 +15,7 @@ export default class Splash extends Component {
 	
 	  this.state = {
 		 loggedIn : false,
-		 loaded : false
+		 loaded : false,
 	  };
 	};
 	
@@ -25,6 +25,7 @@ export default class Splash extends Component {
 
 	loggedIn() {
 		Firebase.auth().onAuthStateChanged((user) => {
+			// alert(JSON.stringify(user));
 			if (user) {
 				this.setState({
 					loggedIn : true
@@ -40,8 +41,8 @@ export default class Splash extends Component {
 	render() {
 		if (this.state.loaded) {
 			if (this.state.loggedIn) {
-				// return <Home/>
-				return <HomeAdmin/>
+				return <Home/>
+				// return <HomeAdmin/>
 			} else {
 				return <Login {...this.props} onLogin={(loggedIn) => this.setState({loggedIn})}/>
 			}

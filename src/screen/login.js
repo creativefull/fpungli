@@ -47,6 +47,7 @@ export default class LoginApp extends Component {
 		const {email, password} = this.state
 		if (email != '' && password != '') {
 			Firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, password).then((result) => {
+				// alert(JSON.stringify(result));
 				this.props.onLogin(true)
 			}).catch((e) => {
 				Alert.alert('Login Gagal', 'Username / Password Tidak Cocok')

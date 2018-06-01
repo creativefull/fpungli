@@ -33,7 +33,8 @@ export default class Signup extends Component {
 			name : this.state.name,
 			phone : this.state.phone,
 			email : this.state.email,
-			password : this.state.password
+			password : this.state.password,
+			role_group : 'user',
 		}).then((result) => {
 			Firebase.auth().currentUser.sendEmailVerification()
 			Alert.alert('Pendaftaran Berhasil', 'Silahkan Cek Email Anda Untuk Verifikasi')

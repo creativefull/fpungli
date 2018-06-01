@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-<<<<<<< HEAD
 import {  View, Text, ScrollView, Dimensions, AsyncStorage, Alert, ActivityIndicator} from 'react-native';
-=======
-import {  View, Text, ScrollView, Dimensions, AsyncStorage, Alert} from 'react-native';
->>>>>>> feature/admin
 import {
 	RkCard, RkTextInput, RkText, RkButton
 } from 'react-native-ui-kitten'
