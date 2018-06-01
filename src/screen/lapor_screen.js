@@ -7,6 +7,10 @@ const ImagePicker = require('react-native-image-picker');
 // const path = require('path');
 
 export default class LaporScreen extends Component {
+	static navigationOptions = {
+		title : 'LAPOR PUNGLI'
+	}
+
 	constructor(props) {
 		super(props)
 	
@@ -16,10 +20,6 @@ export default class LaporScreen extends Component {
 
 		this.selectVideo = this.selectVideo.bind(this);
 	};
-	
-	static navigationOptions = {
-		title : 'LAPOR PUNGLI'
-	}
 
 	selectVideo () {
 		let options = {
@@ -49,13 +49,13 @@ export default class LaporScreen extends Component {
 					.putFile(path, metadata)
 					.then(uploadedFile => {
 						let downloadURL = uploadedFile.downloadURL;
-						alert(JSON.stringify(uploadedFile));
-						// AsyncStorage.setItem('dataVideo', downloadURL , (err) => {
-						// 	this.setState({
-						// 		loading : false
-						// 	});
-						// 	this.props.navigation.navigate('saveVideo')
-						// })
+						// alert(JSON.stringify(uploadedFile));
+						AsyncStorage.setItem('dataVideo', downloadURL , (err) => {
+							this.setState({
+								loading : false
+							});
+							this.props.navigation.navigate('SaveVideo')
+						})
 					})
 					.catch(e => {
 						alert("Error: " + e.message)
@@ -112,7 +112,8 @@ export default class LaporScreen extends Component {
 			</View>
 		)
 	}
-  render() {
+
+	render() {
 		let menus = [{
 			label : 'FOTO',
 			icon : <Icon name="image" size={50} color="#0067B0"/>,
@@ -133,5 +134,5 @@ export default class LaporScreen extends Component {
 				</View>
 			);
 		}
-  }
+	}
 }
