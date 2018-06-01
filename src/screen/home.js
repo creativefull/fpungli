@@ -84,7 +84,8 @@ import LaporScreen from './lapor_screen'
 import History from './history'
 import MapLocation from './maps_location'
 import FormLapor from './formLapor'
-import AccountPage from './account'
+import AccountPage from './account';
+import SaveVideo from './saveVideo';
 
 export default StackNavigator({
 	HomeApp : {
@@ -95,6 +96,9 @@ export default StackNavigator({
 	},
 	FormLapor : {
 		screen : FormLapor
+	},
+	SaveVideo : {
+		screen : SaveVideo
 	},
 	History : {
 		screen : History
