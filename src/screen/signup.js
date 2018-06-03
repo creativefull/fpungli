@@ -20,9 +20,11 @@ export default class Signup extends Component {
 	constructor(props) {
 	  super(props)
 	  this.state = {
-		  name : 'hello',
+		  nik : '',
+		  name : '',
 		  email : '',
 		  phone : '',
+		  alamat : '',
 		  password : '',
 		  cpassword : ''
 	  }
@@ -30,9 +32,11 @@ export default class Signup extends Component {
 
 	sendData(user_id) {
 		Firebase.database().ref('users/' + user_id).set({
+			nik : this.state.nik,
 			name : this.state.name,
 			phone : this.state.phone,
 			email : this.state.email,
+			alamat : this.state.alamat,
 			password : this.state.password
 		}).then((result) => {
 			Firebase.auth().currentUser.sendEmailVerification()
@@ -77,9 +81,19 @@ export default class Signup extends Component {
 					<View>
 						<RkTextInput
 							rkType="rounded"
+							value={this.state.nik}
+							onChangeText={(nik) => this.setState({ nik })}
+							placeholder="NIK (Nomor Induk Kependudukan)"/>
+						<RkTextInput
+							rkType="rounded"
 							value={this.state.name}
 							onChangeText={(name) => this.setState({ name })}
 							placeholder="Nama"/>
+						<RkTextInput
+							rkType="rounded"
+							value={this.state.alamat}
+							onChangeText={(alamat) => this.setState({ alamat })}
+							placeholder="Alamat"/>
 						<RkTextInput
 							rkType="rounded"
 							value={this.state.email}
