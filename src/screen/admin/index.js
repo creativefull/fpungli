@@ -58,10 +58,10 @@ class HomeApp extends Component {
 		},{
 			label : 'MANAGE USER',
 			icon : (<Icon name="user" size={50} color="#0067B0" />),
-			onPress : () => this.pindahMenu('AccountPage')
+			onPress : () => this.pindahMenu('ManageUser')
 		},{
-			label : 'ABOUT',
-			icon : (<Icon name="warning" size={50} color="#0067B0" />)
+			label : 'SETTINGS',
+			icon : (<Icon name="gear" size={50} color="#0067B0" />)
 		}]
 		return (
 			<View style={styles.container}>
@@ -84,6 +84,8 @@ import LaporScreen from './laporan'
 import LaporanDetail from './laporan_detail';
 import News from './news';
 import CreateNews from './create-news';
+import ManageUser from './manage_user';
+import ManageUserEdit from './edit-user';
 
 export default StackNavigator({
 	HomeApp : {
@@ -100,7 +102,13 @@ export default StackNavigator({
 	},
 	CreateNews : {
 		screen : CreateNews
+	},
+	ManageUser : {
+		screen : ManageUser
+	},
+	ManageUserEdit : {
+		screen : ManageUserEdit
 	}
 }, {
-	initialRouteName : 'HomeApp'
+	initialRouteName : 'ManageUser'
 })
