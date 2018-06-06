@@ -8,6 +8,7 @@ import {
 	RkStyleSheet
 } from 'react-native-ui-kitten'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import {Color} from '../../config/theme.json'
 
 // COMPONENTS
 import Menu from '../../components/menus'
@@ -17,7 +18,7 @@ class HomeApp extends Component {
 		title : "ADMINISTRATOR",
 		headerRight : (
 			<RkButton rkType="circle clear small" onPress={() => navigation.state.params.handleLogout()}>
-				<RkText rkType="primary">Logout</RkText>
+				<RkText rkType="primary" style={{color : Color.secondary}}>Logout</RkText>
 			</RkButton>
 		)
 	})
@@ -49,19 +50,19 @@ class HomeApp extends Component {
 	render() {
 		let dataMenu = [{
 			label : 'LAPORAN PUNGLI',
-			icon : (<Icon name="align-right" size={50} color="#0067B0" />),
+			icon : (<Icon name="align-right" size={50} color={Color.primary} />),
 			onPress : () => this.pindahMenu('LaporScreen')
 		},{
 			label : 'ARTIKEL',
-			icon : (<Icon name="pencil" size={50} color="#0067B0" />),
+			icon : (<Icon name="pencil" size={50} color="#0067B0" color={Color.primary} />),
 			onPress : () => this.pindahMenu('News')
 		},{
 			label : 'MANAGE USER',
-			icon : (<Icon name="user" size={50} color="#0067B0" />),
+			icon : (<Icon name="user" size={50} color="#0067B0" color={Color.primary} />),
 			onPress : () => this.pindahMenu('ManageUser')
 		},{
 			label : 'SETTINGS',
-			icon : (<Icon name="gear" size={50} color="#0067B0" />),
+			icon : (<Icon name="gear" size={50} color="#0067B0" color={Color.primary} />),
 			onPress : () => this.pindahMenu('Settings')
 		}]
 		return (
@@ -115,5 +116,13 @@ export default StackNavigator({
 		screen : Settings
 	}
 }, {
-	initialRouteName : 'HomeApp'
+	initialRouteName : 'HomeApp',
+	navigationOptions : {
+		headerStyle : {
+			backgroundColor : Color.primary
+		},
+		headerTitleStyle : {
+			color : Color.secondary
+		}
+	}
 })

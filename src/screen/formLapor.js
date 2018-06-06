@@ -50,6 +50,7 @@ export default class FormLapor extends Component {
 	submitLaporan() {
 		let newChild = HistoryDB.push()
 		const {alamat, judul, diskripsi, assetLink, type, location, status, created_at} = this.state
+		const user = firebase.auth().currentUser;
 
 		if (judul == '' && alamat == '') {
 			Alert.alert('Warning', 'Mohon Lengkapi Laporan Anda!')
@@ -62,22 +63,24 @@ export default class FormLapor extends Component {
 				type : type,
 				location : location,
 				status : status,
-				created_at : created_at
+				created_at : created_at,
+				user_id : user.uid
 			})
 
 			Alert.alert('Success', 'Terimakasih Sudah Mengirim Laporan, Kami Segera Menanggapi')
 			const {navigation} = this.props
-			navigation.dispatch(
-				NavigationActions.reset({
-					index : 0,
-					key : null,
-					actions : [
-						NavigationActions.navigate({
-							routeName : 'MapLocation'
-						})
-					]						
-				})
-			)
+			navigation.navigate('MapLocation')
+			// navigation.dispatch(
+			// 	NavigationActions.reset({
+			// 		index : 0,
+			// 		key : null,
+			// 		actions : [
+			// 			NavigationActions.navigate({
+			// 				routeName : 'MapLocation'
+			// 			})
+			// 		]						
+			// 	})
+			// )
 		}
 	}
 
@@ -104,7 +107,7 @@ export default class FormLapor extends Component {
 
 						<RkButton
 							onPress={this.submitLaporan.bind(this)}
-							rkType="rounded full primary xlarge">KIRIM LAPORAN</RkButton>
+							rkType="rounded full xlarge" style={{backgroundColor: Color.primary}}>KIRIM LAPORAN</RkButton>
 					</View>
 				</RkCard>
 			</ScrollView>

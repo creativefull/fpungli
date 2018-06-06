@@ -9,6 +9,7 @@ import {
 	RkTheme
 } from 'react-native-ui-kitten';
 import Firebase from 'react-native-firebase';
+import {Color} from '../config/theme.json'
 
 import app from '../config/app';
 
@@ -19,7 +20,7 @@ export default class LoginApp extends Component {
 	constructor(props) {
 	  super(props)
 	  this.state = {
-		  imageHeight : new Animated.Value(100),
+		  imageHeight : new Animated.Value(200),
 		  imageWidth : new Animated.Value(350),
 		  opacityHeader : new Animated.Value(1),
 		  loaded : false,
@@ -47,6 +48,7 @@ export default class LoginApp extends Component {
 		const {email, password} = this.state
 		if (email != '' && password != '') {
 			Firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, password).then((result) => {
+				// alert(JSON.stringify(result));
 				this.props.onLogin(true)
 			}).catch((e) => {
 				Alert.alert('Login Gagal', 'Username / Password Tidak Cocok')
@@ -65,8 +67,8 @@ export default class LoginApp extends Component {
 						<Animated.Image
 							style={[styles.image, {width : this.state.imageWidth, height : this.state.imageHeight}]}
 							source={require('../assets/img/logo.png')}/>
-						<Animated.View style={{opacity : this.state.opacityHeader}}>
-							<RkText rkType="light h1">{app.name.toUpperCase()}</RkText>
+						<Animated.View style={{opacity : this.state.opacityHeader, justifyContent : 'center'}}>
+							<RkText rkType="light h1" style={{textAlign : 'center'}}>{app.name.toUpperCase()}</RkText>
 							<RkText rkType="logo h0">{app.description}</RkText>
 						</Animated.View>
 					</Animated.View>
@@ -88,6 +90,7 @@ export default class LoginApp extends Component {
 								<RkButton
 									onPress={this.onLogin.bind(this)}
 									rkType="primary large full rounded"
+									style={{backgroundColor : Color.primary}}
 									contentStyle={{ color : '#FFF' }}>
 									LOGIN
 								</RkButton>
