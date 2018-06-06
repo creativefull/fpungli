@@ -116,12 +116,15 @@ export default StackNavigator({
 		screen : Settings
 	}
 }, {
-	initialRouteName : 'HomeApp',
+	initialRouteName : 'News',
 	navigationOptions : {
 		headerStyle : {
 			backgroundColor : Color.primary
 		},
 		headerTitleStyle : {
+			color : Color.secondary
+		},
+		headerBackTitleStyle : {
 			color : Color.secondary
 		}
 	}

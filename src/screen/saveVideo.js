@@ -58,6 +58,7 @@ export default class FormLapor extends Component {
 		})
 		let newChild = HistoryDB.push()
 		const {alamat, judul, diskripsi, assetLink, type, location, status, created_at, uid} = this.state
+		const user = firebase.auth().currentUser;
 
 		if (judul == '' && alamat == '') {
 			Alert.alert('Warning', 'Mohon Lengkapi Laporan Anda!')
@@ -71,7 +72,8 @@ export default class FormLapor extends Component {
 				location : location,
 				uid : uid,
 				status : status,
-				created_at : created_at
+				created_at : created_at,
+				user_id : user.uid
 			}
 
 			newChild.set(obj);
@@ -81,17 +83,18 @@ export default class FormLapor extends Component {
 			this.setState({
 				loading : false,
 			})
-			navigation.dispatch(
-				NavigationActions.reset({
-					index : 0,
-					key : null,
-					actions : [
-						NavigationActions.navigate({
-							routeName : 'MapLocation'
-						})
-					]						
-				})
-			)
+			navigation.navigate('MapLocation')
+			// navigation.dispatch(
+			// 	NavigationActions.reset({
+			// 		index : 0,
+			// 		key : null,
+			// 		actions : [
+			// 			NavigationActions.navigate({
+			// 				routeName : 'MapLocation'
+			// 			})
+			// 		]						
+			// 	})
+			// )
 		}
 	}
 
