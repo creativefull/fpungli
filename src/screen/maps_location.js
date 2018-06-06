@@ -4,6 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import {
 	RkButton
 } from 'react-native-ui-kitten'
+import {Color} from '../config/theme.json'
 
 const {width, height} = Dimensions.get('screen')
 
@@ -60,7 +61,7 @@ export default class MapLocation extends Component {
 	  <View style={styles.container}>
 	  	<View
 			style={{position : 'absolute', flex : 1, bottom : 10, left : 10, right : 10, justifyContent : 'center', zIndex : 99}}>
-			<RkButton rkType="default full" style={{width : width}} onPress={this.saveLocation.bind(this)}>SELANJUTNYA</RkButton>
+			<RkButton rkType="default full" style={{width : width, backgroundColor : Color.primary}} onPress={this.saveLocation.bind(this)}>SELANJUTNYA</RkButton>
 		</View>
 		<MapView
 			region={{

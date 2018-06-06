@@ -3,8 +3,12 @@ import { ActivityIndicator, AsyncStorage, View, Text, } from 'react-native';
 import Menu from '../components/menus'
 import Icon from 'react-native-vector-icons/FontAwesome'
 const ImagePicker = require('react-native-image-picker');
+import { StackNavigator, TabNavigator } from "react-navigation";
+import MapLocation from './maps_location';
+import FormLapor from './formLapor';
+import {Color} from '../config/theme.json'
 
-export default class LaporScreen extends Component {
+class LaporScreen extends Component {
 	constructor(props) {
 		super(props)
 	
@@ -68,11 +72,11 @@ export default class LaporScreen extends Component {
   render() {
 		let menus = [{
 			label : 'FOTO',
-			icon : <Icon name="image" size={50} color="#0067B0"/>,
+			icon : <Icon name="image" size={50} color={Color.primary}/>,
 			onPress : this.selectImage.bind(this)
 		},{
 			label : 'VIDEO',
-			icon : <Icon name="play-circle" size={50} color="#0067B0"/>
+			icon : <Icon name="play-circle" size={50} color={Color.primary}/>
 		}]
 
 		if (this.state.loading) {
@@ -87,3 +91,20 @@ export default class LaporScreen extends Component {
 		}
   }
 }
+
+const Screen = StackNavigator({
+	MapLocation : {
+		screen : MapLocation
+	},
+	FormLapor : {
+		screen : FormLapor
+	},
+	LaporScreen : {
+		screen : LaporScreen
+	}
+}, {
+	initialRouteName : 'MapLocation',
+	headerMode : 'none'
+})
+
+export default Screen

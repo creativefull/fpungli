@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import {  View, Text, Alert} from 'react-native';
 import Config from '../config/app.json'
-import { StackNavigator } from "react-navigation";
+import {Color} from '../config/theme.json'
+
+import { StackNavigator, TabNavigator } from "react-navigation";
 import { RkButton, RkText } from 'react-native-ui-kitten';
 import Firebase from 'react-native-firebase';
 import {
@@ -17,7 +19,7 @@ class HomeApp extends Component {
 		title : Config.name.toUpperCase(),
 		headerRight : (
 			<RkButton rkType="circle clear small" onPress={() => navigation.state.params.handleLogout()}>
-				<RkText rkType="primary">Logout</RkText>
+				<RkText rkType="primary" style={{color : '#FFF'}}>Logout</RkText>
 			</RkButton>
 		)
 	})
@@ -47,26 +49,9 @@ class HomeApp extends Component {
 	}
 
 	render() {
-		let dataMenu = [{
-			label : 'LAPOR PUNGLI',
-			icon : (<Icon name="camera" size={50} color="#0067B0" />),
-			onPress : () => this.pindahMenu('MapLocation')
-		},{
-			label : 'HISTORY',
-			icon : (<Icon name="align-right" size={50} color="#0067B0" />),
-			onPress : () => this.pindahMenu('History')
-		},{
-			label : 'AKUN SAYA',
-			icon : (<Icon name="user" size={50} color="#0067B0" />),
-			onPress : () => this.pindahMenu('AccountPage')
-		},{
-			label : 'ABOUT',
-			icon : (<Icon name="warning" size={50} color="#0067B0" />)
-		}]
 		return (
 			<View style={styles.container}>
-				<Menu
-					child={dataMenu}/>
+				<RkText>This is article</RkText>
 			</View>
 		);
 	}
@@ -86,25 +71,53 @@ import MapLocation from './maps_location'
 import FormLapor from './formLapor'
 import AccountPage from './account'
 
-export default StackNavigator({
+const HomePage = TabNavigator({
 	HomeApp : {
-		screen : HomeApp
+		screen : HomeApp,
+		navigationOptions : {
+			tabBarIcon : <Icon name="home" size={20} color={Color.secondary} />
+		}
 	},
 	LaporScreen : {
-		screen : LaporScreen
-	},
-	FormLapor : {
-		screen : FormLapor
+		screen : LaporScreen,
+		navigationOptions : {
+			tabBarIcon : <Icon name="camera" size={20} color={Color.secondary} />
+		}
 	},
 	History : {
-		screen : History
-	},
-	MapLocation : {
-		screen : MapLocation
+		screen : History,
+		navigationOptions : {
+			tabBarIcon : <Icon name="align-right" size={20} color={Color.secondary} />
+		}
 	},
 	AccountPage : {
-		screen : AccountPage
+		screen : AccountPage,
+		navigationOptions : {
+			tabBarIcon : <Icon name="user" size={20} color={Color.secondary} />
+		}
 	}
 }, {
-	initialRouteName : 'HomeApp'
+	initialRouteName : 'HomeApp',
+	tabBarOptions : {
+		style : {
+			backgroundColor : Color.primary
+		},
+		showLabel : false,
+		showIcon : true
+	},
+	swipeEnabled : false
+})
+
+export default StackNavigator({
+	HomePage : {
+		screen : HomePage,
+		navigationOptions : {
+			headerStyle : {
+				backgroundColor : Color.primary
+			},
+			headerTitleStyle : {
+				color : '#FFF'
+			}
+		}
+	}
 })

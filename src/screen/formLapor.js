@@ -5,6 +5,7 @@ import {
 } from 'react-native-ui-kitten'
 import firebase from 'react-native-firebase'
 import {NavigationActions} from 'react-navigation'
+import {Color} from '../config/theme.json'
 
 const HistoryDB = firebase.database().ref('/laporan')
 const {width, height} = Dimensions.get('screen')
@@ -72,7 +73,7 @@ export default class FormLapor extends Component {
 					key : null,
 					actions : [
 						NavigationActions.navigate({
-							routeName : 'HomeApp'
+							routeName : 'MapLocation'
 						})
 					]						
 				})
