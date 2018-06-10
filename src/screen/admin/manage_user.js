@@ -5,11 +5,17 @@ import {
 } from 'react-native-ui-kitten'
 import firebase from 'react-native-firebase'
 const HistoryDB = firebase.database().ref('/users')
+import {Color} from '../../config/theme.json'
 
 export default class ManageUser extends Component {
-	static navigationOptions = {
-		title : "Manage User"
-	}
+	static navigationOptions = ({navigation}) => ({
+		title : "Manage User",
+		headerRight : (
+			<RkButton rkType="circle clear small" onPress={() => navigation.navigate('TambahUser')}>
+				<RkText rkType="primary" style={{color : Color.secondary}}>Tambah</RkText>
+			</RkButton>
+		)
+	})
 
 	constructor(props) {
 	  super(props)

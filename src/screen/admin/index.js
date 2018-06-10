@@ -12,6 +12,7 @@ import {Color} from '../../config/theme.json'
 
 // COMPONENTS
 import Menu from '../../components/menus'
+const topicName = 'admin'
 
 class HomeApp extends Component {
 	static navigationOptions = ({navigation}) => ({
@@ -31,6 +32,7 @@ class HomeApp extends Component {
 			text : 'YA, KELUAR',
 			onPress : () => {
 				Firebase.auth().signOut().then(() => {
+					Firebase.messaging().unsubscribeFromTopic(topicName);
 					this.props.navigation.navigate('Splash')
 				}).catch((e) => {
 					Alert.alert('Error', e.message)
@@ -39,8 +41,51 @@ class HomeApp extends Component {
 		}])
 	}
 
-	componentDidMount() {
+	async checkPermission() {
+		await Firebase.messaging().requestPermission();
+		const enabled = await Firebase.messaging().hasPermission();
+		if (enabled) {
+			// user has permissions
+		} else {
+			// user doesn't have permission
+		}
+	}
+
+	listenNotification() {
+		Firebase.notifications().onNotificationDisplayed((Notification) => {
+		})
+	}
+	
+	onMessage() {
+		Firebase.messaging().onMessage((message) => {
+			// this.displayNotification(message)
+			console.log(message)
+		})
+	}
+
+	async initialNotification() {
+		Firebase.notifications().getInitialNotification().then((notificationOpen) => {
+			if (notificationOpen.notification) {
+				const {data} = notificationOpen.notification
+				if (data.type == 'Laporan') {
+					this.props.navigation.navigate('LaporanDetail', {id : data.id, title : data.title})
+				}
+			}
+		})
+	}
+	
+	async componentDidMount() {
 		this.props.navigation.setParams({handleLogout : this.onLogout.bind(this)})
+		this.checkPermission()
+		this.listenNotification()
+		const fcmToken = await Firebase.messaging().getToken();
+		Firebase.messaging().subscribeToTopic(topicName);
+		this.initialNotification()
+	}
+
+	componentWillUnmount() {
+		console.log('Aplikasi di keluarkan')
+		this.onMessage()
 	}
 	
 	pindahMenu(uri, params = {}) {
@@ -87,6 +132,7 @@ import LaporanDetail from './laporan_detail';
 import News from './news';
 import CreateNews from './create-news';
 import ManageUser from './manage_user';
+import TambahUser from './tambah-user';
 import ManageUserEdit from './edit-user';
 import Settings from './setting';
 
@@ -112,11 +158,14 @@ export default StackNavigator({
 	ManageUserEdit : {
 		screen : ManageUserEdit
 	},
+	TambahUser : {
+		screen : TambahUser
+	},
 	Settings : {
 		screen : Settings
 	}
 }, {
-	initialRouteName : 'News',
+	initialRouteName : 'HomeApp',
 	navigationOptions : {
 		headerStyle : {
 			backgroundColor : Color.primary

@@ -47,6 +47,18 @@ export default class FormLapor extends Component {
 		this.setState({ location, assetLink })
 	}
 
+	sendMessage(data) {
+		let url = 'https://fcm.googleapis.com/fcm/send'
+		fetch(url, {
+			headers : {
+				'Authorization' : 'key=AIzaSyAGnf_KsQFhGF8M0oc7DoXzCqQ6QVtGf8E',
+				'Content-Type' : 'application/json'
+			},
+			method : 'POST',
+			body : JSON.stringify(data)
+		}).then((x) => x.json()).then(console.log)
+	}
+
 	submitLaporan() {
 		let newChild = HistoryDB.push()
 		const {alamat, judul, diskripsi, assetLink, type, location, status, created_at} = this.state
@@ -66,6 +78,20 @@ export default class FormLapor extends Component {
 				created_at : created_at,
 				user_id : user.uid
 			})
+			// SEND NOTIFICATION
+			this.sendMessage({
+				topic : 'admin',
+				notification : {
+					'body' : judul,
+					'title' : 'Laporan Masuk',
+				},
+				'to' : '/topics/admin',
+				'data' : {
+					'type' : 'Laporan',
+					'id' : newChild.key,
+					'title' : judul
+				}
+			})	
 
 			Alert.alert('Success', 'Terimakasih Sudah Mengirim Laporan, Kami Segera Menanggapi')
 			const {navigation} = this.props

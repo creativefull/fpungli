@@ -20,13 +20,13 @@ export default class Signup extends Component {
 	constructor(props) {
 	  super(props)
 	  this.state = {
-		  nik : '',
-		  name : '',
-		  email : '',
-		  phone : '',
-		  alamat : '',
-		  password : '',
-		  cpassword : ''
+			nik : '',
+			name : '',
+			email : '',
+			phone : '',
+			alamat : '',
+			password : '',
+			cpassword : ''
 	  }
 	};
 
