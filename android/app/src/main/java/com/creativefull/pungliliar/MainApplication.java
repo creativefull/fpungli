@@ -30,6 +30,8 @@ import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage; //
 import java.util.Arrays;
 import java.util.List;
 
+import com.tangituru.anounywa.nativemodules.smsmodule.SmsPackage;
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -59,7 +61,8 @@ public class MainApplication extends Application implements ReactApplication {
         new RNFirebaseNotificationsPackage(),
         new RNFirebasePerformancePackage(),
         new RNFirebaseRemoteConfigPackage(),
-        new RNFirebaseStoragePackage()
+        new RNFirebaseStoragePackage(),
+        new SmsPackage()
       );
     }
     

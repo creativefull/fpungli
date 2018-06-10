@@ -5,6 +5,7 @@ import {
 } from 'react-native-ui-kitten'
 import firebase from 'react-native-firebase'
 const UserDB = firebase.database().ref('/users')
+import {Color} from '../config/theme.json'
 
 export default class AccountPage extends Component {
 	static navigationOptions = {
@@ -78,7 +79,7 @@ export default class AccountPage extends Component {
 
 				<RkButton
 					onPress={this.simpanAkun.bind(this)}
-					rkType="rounded full primary xlarge">UBAH AKUN SAYA</RkButton>
+					rkType="rounded" style={{backgroundColor: Color.primary, width : 200}}>UBAH AKUN SAYA</RkButton>
 			</View>
 		</RkCard>
 	  </ScrollView>

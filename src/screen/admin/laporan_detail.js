@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
-import {  View, Text, ScrollView, Image, TouchableOpacity} from 'react-native';
+import {  View, Text, ScrollView, Image, TouchableOpacity, NativeModules} from 'react-native';
 import {
 	RkText,
 	RkCard,
 	RkStyleSheet,
 	RkTheme,
-	RkButton
+	RkButton,
+    RkTextInput
 } from 'react-native-ui-kitten'
 import firebase from 'react-native-firebase';
 import MapView, { Marker } from 'react-native-maps';
+import {Color} from '../../config/theme.json'
+const {RNSms} = NativeModules
 
 const moment = require('moment')
 moment.locale('id')
@@ -29,21 +32,51 @@ RkTheme.setType('RkButton', 'btnAction', {
 
 export default class LaporanDetail extends Component {
 	static navigationOptions = ({navigation}) => ({
-		title : navigation.state.params.title
+		title : navigation.state.params.title,
+		// headerRight : (
+		// 	<RkButton rkType="circle clear small" onPress={() => navigation.state.params.handleLogout()}>
+		// 		<RkText rkType="primary" style={{color : Color.secondary}}>Tambah User</RkText>
+		// 	</RkButton>
+		// )
 	})
 
 	constructor(props) {
 		super(props)
 
 		this.state = {
-			data : null
+			data : null,
+			keterangan : '',
+			setting : {}
 		};
 	};
 	
 	getData(id) {
 		firebase.database().ref('/laporan/' + id).on('value', (results) => {
+			let value = results.val()
 			this.setState({
-				data : results.val()
+				data : value,
+				keterangan : value.keterangan
+			})
+		})
+	}
+
+	getSettings() {
+		const settingModel = firebase.database().ref('/settings')
+		settingModel.once('value', (settings) => {
+			const setting = settings.val()
+			this.setState({setting})
+		})
+	}
+
+	async getUserInfo(id) {
+		return new Promise((resolve, reject) => {
+			firebase.database().ref('/users').child(id).once('value', (response) => {
+				if (response) {
+					const value = response.val()
+					return resolve(value)
+				} else {
+					return reject({message : 'User tidak di temukan'})
+				}
 			})
 		})
 	}
@@ -51,14 +84,34 @@ export default class LaporanDetail extends Component {
 	actTerima() {
 		const {id} = this.props.navigation.state.params
 		const collections = firebase.database().ref('/laporan').child(id)
-		collections.update({
-			status : 'proses'
+		const {message_progress} = this.state.setting
+
+		collections.once('value', (snap) => {
+			let value = snap.val()
+			this.getUserInfo(value.user_id).then((user) => {
+				if (user) {
+					RNSms.send(this.state.setting.message_progress, user.phone)
+					collections.update({
+						status : 'proses',
+						keterangan : this.state.keterangan
+					})
+				} else {
+					collections.update({
+						status : 'gagal',
+						keterangan : 'User tidak di temukan'
+					})
+				}
+				// alert(JSON.stringify(user))
+			}).catch((e) => {
+			})
 		})
 	}
 
 	componentDidMount() {
 		const {params} = this.props.navigation.state
 		this.getData(params.id)
+
+		this.getSettings()
 	}
 
 	renderMaps() {
@@ -81,14 +134,39 @@ export default class LaporanDetail extends Component {
 		}
 	}
 
+	actSelesai() {
+		const {id} = this.props.navigation.state.params
+		const collections = firebase.database().ref('/laporan').child(id)
+		const {message_done} = this.state.setting
+		collections.once('value', (snap) => {
+			let value = snap.val()
+			this.getUserInfo(value.user_id).then((user) => {
+				if (user) {
+					RNSms.send(this.state.setting.message_progress, user.phone)
+					collections.update({
+						status : 'selesai',
+						keterangan : this.state.keterangan
+					})
+				} else {
+					collections.update({
+						status : 'gagal',
+						keterangan : 'User tidak di temukan'
+					})
+				}
+				// alert(JSON.stringify(user))
+			}).catch((e) => {
+			})
+		})
+	}
+
 	renderBtn() {
 		if (this.state.data.status == 'proses') {
 			return (
 				<RkButton
-					onPress={this.actTerima.bind(this)}
+					onPress={this.actSelesai.bind(this)}
 					rkType="success small btnAction">SELESAI</RkButton>
 			)
-		} else {
+		} else if (this.state.data.status == 'selesai') {
 			return (
 				<RkButton
 					onPress={this.actTerima.bind(this)}
@@ -120,10 +198,13 @@ export default class LaporanDetail extends Component {
 
 						{this.renderMaps()}
 	
+						<RkTextInput
+							rkType="rounded"
+							value={this.state.keterangan}
+							onChangeText={(keterangan) => this.setState({keterangan})}
+							placeholder="Keterangan"/>
 						<View style={{padding : 10, flexDirection : 'row'}}>
 							{this.renderBtn()}
-							<RkButton
-								rkType="danger small btnAction">DITERIMA</RkButton>
 						</View>
 					</RkCard>
 				</ScrollView>

@@ -2,19 +2,66 @@ import React, { Component } from 'react';
 import { ActivityIndicator, AsyncStorage, View, Text, } from 'react-native';
 import Menu from '../components/menus'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import firebase from 'react-native-firebase';
 const ImagePicker = require('react-native-image-picker');
+import { StackNavigator, TabNavigator } from "react-navigation";
+import MapLocation from './maps_location';
+import FormLapor from './formLapor';
+import SaveVideo from './saveVideo';
+import {Color} from '../config/theme.json'
 
-export default class LaporScreen extends Component {
+class LaporScreen extends Component {
 	constructor(props) {
 		super(props)
 	
 		this.state = {
 			 loading : false
 		};
+
+		this.selectVideo = this.selectVideo.bind(this);
 	};
-	
-	static navigationOptions = {
-		title : 'LAPOR PUNGLI'
+
+	selectVideo () {
+		let options = {
+			title : 'Pilih Video',
+			takePhotoButtonTitle : 'Take Video',
+			mediaType : 'video',
+			cameraType : 'back',
+			storageOptions : {
+				skipBackup : true,
+			}
+		}
+
+		const metadata = {
+			contentType: 'video/mp4'
+		}
+
+		let filename = Math.floor(Math.random() * 1000000000);
+
+		ImagePicker.showImagePicker(options, (response) => {
+			if (!response.didCancel) {
+				this.setState({
+					loading : true
+				})
+				let path = response.path;
+				firebase.storage()
+					.ref("/"+filename)
+					.putFile(path, metadata)
+					.then(uploadedFile => {
+						let downloadURL = uploadedFile.downloadURL;
+						// alert(JSON.stringify(uploadedFile));
+						AsyncStorage.setItem('dataVideo', downloadURL , (err) => {
+							this.setState({
+								loading : false
+							});
+							this.props.navigation.navigate('SaveVideo')
+						})
+					})
+					.catch(e => {
+						alert("Error: " + e.message)
+					});
+			}
+		})
 	}
 
 	selectImage() {
@@ -65,14 +112,16 @@ export default class LaporScreen extends Component {
 			</View>
 		)
 	}
-  render() {
+
+	render() {
 		let menus = [{
 			label : 'FOTO',
-			icon : <Icon name="image" size={50} color="#0067B0"/>,
+			icon : <Icon name="image" size={50} color={Color.primary}/>,
 			onPress : this.selectImage.bind(this)
 		},{
 			label : 'VIDEO',
-			icon : <Icon name="play-circle" size={50} color="#0067B0"/>
+			icon : <Icon name="play-circle" size={50} color={Color.primary}/>,
+			onPress : this.selectVideo.bind(this)
 		}]
 
 		if (this.state.loading) {
@@ -85,5 +134,28 @@ export default class LaporScreen extends Component {
 				</View>
 			);
 		}
-  }
+	}
 }
+
+const Screen = StackNavigator({
+	MapLocation : {
+		screen : MapLocation
+	},
+	FormLapor : {
+		screen : FormLapor
+	},
+	LaporScreen : {
+		screen : LaporScreen
+	},
+	SaveVideo : {
+		screen : SaveVideo,
+		navigationOptions : {
+			title : 'Uploading Video'
+		}
+	},
+}, {
+	initialRouteName : 'MapLocation',
+	headerMode : 'none'
+})
+
+export default Screen

@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types'
 import Icon from 'react-native-vector-icons'
+import {Color} from '../config/theme.json'
 
 import {
 	RkStyleSheet, RkButton, RkText, RkTheme
@@ -79,11 +80,11 @@ class MenuComponent extends Component {
 
 RkTheme.setType('RkButton', 'btn-bordered', {
 	borderWidth: 1,
-	borderColor: '#0067B0',
+	borderColor: Color.primary,
 	flexDirection : 'column'
 })
 RkTheme.setType('RkText', 'btn-label', {
-	color : '#666',
+	color : Color.primary,
 	fontWeight: 'bold',
 	fontSize: 15,
 })
