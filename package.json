@@ -22,8 +22,8 @@
   },
   "dependencies": {
     "fbjs": "^0.8.16",
-    "path": "^0.12.7",
     "moment": "^2.22.1",
+    "path": "^0.12.7",
     "prop-types": "^15.6.1",
     "react": "^16.3.0-alpha.1",
     "react-native": "^0.55.3",
@@ -32,6 +32,7 @@
     "react-native-maps": "^0.21.0",
     "react-native-ui-kitten": "^3.0.1",
     "react-native-vector-icons": "^4.6.0",
+    "react-native-video": "^3.0.0",
     "react-navigation": "^1.5.11"
   }
 }

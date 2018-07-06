@@ -170,6 +170,7 @@ export default StackNavigator({
 		headerStyle : {
 			backgroundColor : Color.primary
 		},
+		headerTintColor : '#FFF',
 		headerTitleStyle : {
 			color : Color.secondary
 		},

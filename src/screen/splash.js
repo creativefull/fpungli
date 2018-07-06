@@ -30,17 +30,25 @@ export default class Splash extends Component {
 				Firebase.database().ref('users').child(user.uid).once('value', (userData) => {
 					const uV = userData.val()
 					if (uV) {
-						this.setState({
-							loggedIn : true,
-							loaded : true,
-							role : uV.role_group
-						})
+						if (user.emailVerified) {
+							this.setState({
+								loggedIn : true,
+								loaded : true,
+								role : uV.role_group
+							})
+						} else {
+							Firebase.auth().signOut()							
+							this.setState({
+								loaded : true,
+								loggedIn : false
+							})	
+						}
 					} else {
 						Firebase.auth().signOut()
 						this.setState({
 							loaded : true,
 							loggedIn : false
-						})								
+						})
 					}
 				})
 			} else {

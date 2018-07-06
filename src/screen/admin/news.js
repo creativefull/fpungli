@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
+import {  View, Text, FlatList, Alert, Image, TouchableOpacity} from 'react-native';
 
 import {
 	RkStyleSheet, RkCard, RkText, RkButton, RkTheme
@@ -11,6 +11,8 @@ const HistoryDB = firebase.database().ref('/artikel')
 
 import Icon from 'react-native-vector-icons/FontAwesome'
 import {Color} from '../../config/theme.json'
+import moment from 'moment'
+moment.locale('id-ID')
 
 export default class History extends Component {
 	static navigationOptions = ({navigation}) => ({
@@ -31,7 +33,7 @@ export default class History extends Component {
 	};
 	
 	getData() {
-		HistoryDB.on('value', (value) => {
+		HistoryDB.orderByChild('waktu').on('value', (value) => {
 			let x = []
 			value.forEach((v) => {
 				let data = v.val()
@@ -45,6 +47,7 @@ export default class History extends Component {
 				})
 			})
 
+			x = x.reverse()
 			this.setState({data : x})
 			// alert(JSON.stringify(x))
 			// let v = value.val()
@@ -60,9 +63,25 @@ export default class History extends Component {
 		return post.key;
 	}
 
+	onDelete(id) {
+		Alert.alert('Warning', 'Apakah Anda Yakin Ingin Menghapus Artikel Ini ?', [{
+			text : 'TIDAK',
+			onPress : null
+		}, {
+			text : 'YA',
+			onPress : () => {
+				firebase.database().ref('/artikel/' + id).remove(() => {
+					alert('Artikel Berhasil Di Hapus')
+				})
+			}
+		}])
+	}
+
 	renderItem(info) {
 		return (
-			<TouchableOpacity onPress={() => this.props.navigation.navigate('CreateNews', {id : info.item.key, title : info.item.judul})}>
+			<TouchableOpacity
+				onPress={() => this.props.navigation.navigate('CreateNews', {id : info.item.key, title : info.item.judul})}
+				onLongPress={() => this.onDelete(info.item.key)}>
 				<RkCard
 					style={styles.card}>
 					<View rkCardContent style={styles.overlay}>
@@ -72,7 +91,7 @@ export default class History extends Component {
 
 							<RkText
 								style={styles.time}
-								rkType='secondary2 inverseColor'>{info.item.time}</RkText>
+								rkType='secondary2 inverseColor'>{moment(info.item.time).format('DD MMMM YYYY HH:mm:ss')}</RkText>
 
 							<RkText
 								rkType="label inverseColor">

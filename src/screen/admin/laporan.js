@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  View, Text, FlatList, Image, TouchableOpacity} from 'react-native';
+import {  View, Text, FlatList, Image, TouchableOpacity, Alert} from 'react-native';
 
 import {
 	RkStyleSheet, RkCard, RkText, RkButton, RkTheme
@@ -10,6 +10,10 @@ import firebase from 'react-native-firebase'
 const HistoryDB = firebase.database().ref('/laporan')
 
 import Icon from 'react-native-vector-icons/FontAwesome'
+import moment from 'moment'
+moment.locale('ID')
+
+import Video from 'react-native-video'
 
 export default class History extends Component {
 	static navigationOptions = {
@@ -34,18 +38,33 @@ export default class History extends Component {
 					key : keyOfItem,
 					judul : data.judul,
 					assetLink : data.assetLink,
-					type : 'image',
+					type : data.type,
 					time : data.created_at,
 					status : data.status
 				})
 			})
 
+			x = x.reverse()
 			this.setState({data : x})
 			// alert(JSON.stringify(x))
 			// let v = value.val()
 			// alert(JSON.stringify(value.toJSON()))
 		})
 	}
+
+	onDelete(id) {
+		Alert.alert('Warning', 'Apakah Anda Yakin Ingin Menghapus Laporan Ini ?', [{
+			text : 'TIDAK',
+			onPress : null
+		}, {
+			text : 'YA',
+			onPress : () => {
+				firebase.database().ref('/laporan/' + id).remove(() => {
+					alert('Laporan Berhasil Di Hapus')
+				})
+			}
+		}])
+	}	
 
 	componentDidMount() {
 		this.getData()
@@ -57,7 +76,9 @@ export default class History extends Component {
 
 	renderItem(info) {
 		return (
-			<TouchableOpacity onPress={() => this.props.navigation.navigate('LaporanDetail', {id : info.item.key, title : info.item.judul})}>
+			<TouchableOpacity
+				onPress={() => this.props.navigation.navigate('LaporanDetail', {id : info.item.key, title : info.item.judul})}
+				onLongPress={() => this.onDelete(info.item.key)}>
 				<RkCard
 					rkType="imgBlock"
 					style={styles.card}>
@@ -67,16 +88,24 @@ export default class History extends Component {
 					
 					<View rkCardContent style={styles.overlay}>
 						<View style={{paddingRight : 10}}>
-							<Icon
-								name={info.item.type == 'image' ? 'image' : 'play-circle'}
-								size={50}/>
+							{
+								info.item.type == 'image' ? (
+									<Icon
+										name={'image'}
+										size={50}/>
+								) : (
+									<Icon
+										name={'play-circle'}
+										size={50}/>
+								)
+							}
 						</View>
 						<View style={{flexWrap : 'wrap', paddingRight : 30, marginRight : 20}}>
 							<RkText
 								rkType="header4 inverseColor">{info.item.judul.toUpperCase()}</RkText>
 							<RkText
 								style={styles.time}
-								rkType='secondary2 inverseColor'>{info.item.time}</RkText>
+								rkType='secondary2 inverseColor'>{moment(info.item.time).format('DD MMMM YYYY HH:mm:ss')}</RkText>
 
 							<RkText
 								rkType="label primary">

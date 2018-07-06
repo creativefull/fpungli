@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  View, Text, Alert, Dimensions, ScrollView} from 'react-native';
+import {  View, Text, Alert, Dimensions, ScrollView, TouchableHighlight} from 'react-native';
 import Config from '../config/app.json'
 import {Color} from '../config/theme.json'
 
@@ -69,6 +69,7 @@ class HomeApp extends Component {
 				})
 			})
 
+			artikel = artikel.reverse()
 			this.setState({artikel})
 		})
 	}
@@ -91,20 +92,24 @@ class HomeApp extends Component {
 							<RkCard
 								style={styles.card}
 								key={key}>
-								<View rkCardContent style={styles.overlay}>
-									<View style={{flexWrap : 'wrap', paddingRight : 30, marginRight : 20}}>
-										<RkText
-											rkType="header4" style={{color : Color.primary}}>{artikel.judul}</RkText>
-										<RkText
-											style={styles.time}
-											rkType='secondary2 inverseColor'>{moment(artikel.waktu).add(new Date(), 'days').fromNow()}</RkText>
+								<TouchableHighlight
+									underlayColor='#F00'
+									onPress={() => this.props.navigation.navigate('DetailArtikel', {id : artikel.key, title : artikel.judul})}>
+									<View rkCardContent style={styles.overlay}>
+										<View style={{flexWrap : 'wrap', paddingRight : 30, marginRight : 20}}>
+											<RkText
+												rkType="header4" style={{color : Color.primary}}>{artikel.judul}</RkText>
+											<RkText
+												style={styles.time}
+												rkType='secondary2 inverseColor'>{moment(artikel.waktu).add(new Date(), 'days').fromNow()}</RkText>
 
-										<RkText
-											rkType="label inverseColor">
-											{artikel.diskripsi}
-										</RkText>
+											<RkText
+												rkType="label inverseColor">
+												{artikel.diskripsi}
+											</RkText>
+										</View>
 									</View>
-								</View>
+								</TouchableHighlight>
 							</RkCard>
 						)
 					})
@@ -122,7 +127,7 @@ class HomeApp extends Component {
 				</ScrollView>
 				<View
 					style={{position : 'absolute', flex : 1, bottom : 10, left : 10, right : 10, justifyContent : 'center', zIndex : 99}}>
-					<RkButton rkType="default full" style={{width : width, backgroundColor : Color.primary}} onPress={() => this.props.navigation.navigate('LaporScreen')}>LAPORKAN PUNGLI</RkButton>
+					<RkButton rkType="default full" style={{width : width, backgroundColor : Color.primary}} onPress={() => this.props.navigation.navigate('MapLocation')}>LAPORKAN PUNGLI</RkButton>
 				</View>
 			</View>
 		);
@@ -152,10 +157,23 @@ import History from './history'
 import MapLocation from './maps_location'
 import FormLapor from './formLapor'
 import AccountPage from './account';
+import DetailArtikel from './detailArtikel'
+
+const ArtikelPage = StackNavigator({
+	HomeApp : {
+		screen : HomeApp
+	},
+	DetailArtikel : {
+		screen : DetailArtikel
+	}
+}, {
+	headerMode : 'none',
+	initialRouteName : 'HomeApp'
+})
 
 const HomePage = TabNavigator({
 	HomeApp : {
-		screen : HomeApp,
+		screen : ArtikelPage,
 		navigationOptions : {
 			tabBarIcon : <Icon name="home" size={20} color={Color.secondary} />
 		}

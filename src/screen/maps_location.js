@@ -26,7 +26,7 @@ export default class MapLocation extends Component {
 	
 	getMylocation() {
 		// Geolocation.requestAuthorization()
-		navigator.geolocation.watchPosition(({coords}) => {
+		navigator.geolocation.getCurrentPosition(({coords}) => {
 			const {latitude, longitude} = coords
 			let location = {
 				latitude : latitude,

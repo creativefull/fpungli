@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  View, Text, ScrollView, Image, TouchableOpacity, NativeModules} from 'react-native';
+import {  View, Text, Linking, ScrollView, Image, TouchableOpacity, NativeModules} from 'react-native';
 import {
 	RkText,
 	RkCard,
@@ -12,6 +12,7 @@ import firebase from 'react-native-firebase';
 import MapView, { Marker } from 'react-native-maps';
 import {Color} from '../../config/theme.json'
 const {RNSms} = NativeModules
+import Video from 'react-native-video'
 
 const moment = require('moment')
 moment.locale('id')
@@ -46,7 +47,8 @@ export default class LaporanDetail extends Component {
 		this.state = {
 			data : null,
 			keterangan : '',
-			setting : {}
+			setting : {},
+			paused : false
 		};
 	};
 	
@@ -90,10 +92,11 @@ export default class LaporanDetail extends Component {
 			let value = snap.val()
 			this.getUserInfo(value.user_id).then((user) => {
 				if (user) {
-					RNSms.send(this.state.setting.message_progress, user.phone)
 					collections.update({
 						status : 'proses',
 						keterangan : this.state.keterangan
+					}, () => {
+						RNSms.send(this.state.setting.message_progress + " " + this.state.keterangan, user.phone)
 					})
 				} else {
 					collections.update({
@@ -119,12 +122,22 @@ export default class LaporanDetail extends Component {
 		const {location} = data
 		if (location) {
 			return (
-				<MapView
-					initialRegion={{latitude : location.latitude, longitude : location.longitude, latitudeDelta : 0.002, longitudeDelta : 0.002}}
-					style={{height : 200}}>
-					<Marker coordinate={location}/>
-				</MapView>
-			)	
+				<View>
+					<MapView
+						initialRegion={{latitude : location.latitude, longitude : location.longitude, latitudeDelta : 0.002, longitudeDelta : 0.002}}
+						style={{height : 200}}>
+						<Marker coordinate={location}/>
+					</MapView>
+
+					<RkButton
+						style={{marginTop: 10}}
+						onPress={() => {
+							Linking.openURL('https://www.google.com/maps/search/?api=1&query=' + location.latitude + ',' + location.longitude)
+						}}
+						rkType="primary small">
+						Petunjuk Jalan</RkButton>
+				</View>
+			)
 		} else {
 			return (
 				<View style={{padding : 10}}>
@@ -142,10 +155,11 @@ export default class LaporanDetail extends Component {
 			let value = snap.val()
 			this.getUserInfo(value.user_id).then((user) => {
 				if (user) {
-					RNSms.send(this.state.setting.message_progress, user.phone)
 					collections.update({
 						status : 'selesai',
 						keterangan : this.state.keterangan
+					}, () => {
+						RNSms.send(this.state.setting.message_done + this.state.keterangan, user.phone)
 					})
 				} else {
 					collections.update({
@@ -166,7 +180,7 @@ export default class LaporanDetail extends Component {
 					onPress={this.actSelesai.bind(this)}
 					rkType="success small btnAction">SELESAI</RkButton>
 			)
-		} else if (this.state.data.status == 'selesai') {
+		} else if (this.state.data.status == 'pending') {
 			return (
 				<RkButton
 					onPress={this.actTerima.bind(this)}
@@ -175,13 +189,43 @@ export default class LaporanDetail extends Component {
 		}
 	}
 
+	playPauseVideo() {
+		this.player.seek(0)		
+	}
+
+	renderVideo(item) {
+		return (
+			<View>
+				<View
+					style={{
+						height : 300
+					}}>
+					<Video
+						ref={(ref) => {
+							this.player = ref
+						}}
+						source={{uri : item.assetLink}}
+						style={{
+							position: 'absolute',
+							top: 0,
+							left: 0,
+							bottom: 0,
+							right: 0,
+						}}/>
+				</View>
+			</View>
+		)
+	}
+
 	render() {
 		const {data} = this.state
 		if (data) {
 			return (
 				<ScrollView>
 					<RkCard rkType="article">
-						<Image rkCardImg source={{uri : data.assetLink}}/>
+						{
+							data.type == 'image' ? <Image rkCardImg source={{uri : data.assetLink}}/> : this.renderVideo(data)
+						}
 	
 						<View>
 							<View style={{margin: 10}}>
@@ -203,6 +247,7 @@ export default class LaporanDetail extends Component {
 							value={this.state.keterangan}
 							onChangeText={(keterangan) => this.setState({keterangan})}
 							placeholder="Keterangan"/>
+
 						<View style={{padding : 10, flexDirection : 'row'}}>
 							{this.renderBtn()}
 						</View>

@@ -42,6 +42,7 @@ export default class History extends Component {
 				k += 1
 			})
 
+			x = x.reverse()
 			this.setState({data : x})
 			// alert(JSON.stringify(x))
 			// let v = value.val()

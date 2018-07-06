@@ -39,15 +39,23 @@ export default class AccountPage extends Component {
 			email: this.state.email,
 			emailVerified: true,
 			phoneNumber: this.state.phone,
+			nik : this.state.nik,
+			role_group : this.state.role_group,
 			password: this.state.password,
 			displayName: this.state.name,
 		}
 
-		cUser.createUserWithEmailAndPassword(this.state.email, this.state.password).then((result) => {
-			this.sendData(result.user.uid)			
-			ToastAndroid.show('Berhasil Tambah User', ToastAndroid.SHORT)
-			this.props.navigation.goBack()
-		})
+		const {nik} = this.state
+		if (nik.substr(0, 4) == '3318' && nik.length == 16) {
+			cUser.createUserWithEmailAndPassword(this.state.email, this.state.password).then((result) => {
+				firebase.auth().currentUser.sendEmailVerification()
+				this.sendData(result.user.uid)
+				ToastAndroid.show('Berhasil Tambah User', ToastAndroid.SHORT)
+				this.props.navigation.goBack()
+			})
+		} else {
+			alert('NIK Tidak Valid')
+		}
 
 	}
 

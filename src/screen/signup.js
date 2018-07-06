@@ -10,6 +10,7 @@ import {
 } from 'react-native-ui-kitten';
 
 import Firebase from 'react-native-firebase';
+import {Color} from '../config/theme.json'
 
 import app from '../config/app';
 
@@ -40,7 +41,6 @@ export default class Signup extends Component {
 			password : this.state.password,
 			role_group : 'user'
 		}).then((result) => {
-			Firebase.auth().currentUser.sendEmailVerification()
 			Alert.alert('Pendaftaran Berhasil', 'Silahkan Cek Email Anda Untuk Verifikasi')
 		}).catch((e) => {
 			Alert.alert('Pendaftaran Gagal', e.message)
@@ -48,20 +48,34 @@ export default class Signup extends Component {
 	}
 
 	onSubmit() {
-		let {name, email, phone, password, cpassword} = this.state
-		if (name != '' && email != '' && phone != '' && password != '' && cpassword != '') {
+		let {name, email, phone, password, cpassword, nik} = this.state
+		if (name != '' && email != '' && phone != '' && password != '' && cpassword != '', nik != '') {
 			if (password != cpassword) {
 				return Alert.alert('Error', 'Konfirmasi Password Tidak Cocok')
 			}
 			
-			Firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.state.email, this.state.password).then((result) => {
-				// alert(JSON.stringify(result))
-				Firebase.auth().onAuthStateChanged((user) => {
-					this.sendData(result.user.uid)
-				})
-			}).catch((e) => {
-				Alert.alert('Pendaftaran Gagal', e.message)
-			})
+			if (nik.length <= 5) {
+				return Alert.alert('Error', 'Nomor NIK Tidak Valid')
+			} else {
+				if (nik.substr(0, 4) == '3318' && nik.length == 16) {
+					Firebase.auth().createUserAndRetrieveDataWithEmailAndPassword(this.state.email, this.state.password).then((result) => {
+						Firebase.auth().currentUser.sendEmailVerification()
+						Firebase.auth().signOut().then(() => {
+							// alert(JSON.stringify(result))
+							// Firebase.auth().onAuthStateChanged((user) => {
+							this.sendData(result.user.uid)
+							this.props.navigation.goBack()
+							// })
+						}).catch((e) => {
+							alert('Terjadi Kesalahan')
+						})
+					}).catch((e) => {
+						Alert.alert('Pendaftaran Gagal', e.message)
+					})		
+				} else {
+					return Alert.alert('Error', 'Nomor NIK Tidak Valid')
+				}
+			}
 		} else {
 			Alert.alert('Pendaftaran Gagal', 'Semua Informasi Harus Di Isi')
 		}
@@ -74,7 +88,7 @@ export default class Signup extends Component {
 				<View style={styles.header}>
 					<Image
 						style={[styles.image]}
-						source={require('../assets/img/register.png')}/>
+						source={require('../assets/img/logo.png')}/>
 					<RkText rkType="light h1">{"PENDAFTARAN".toUpperCase()}</RkText>
 				</View>
 
@@ -121,6 +135,7 @@ export default class Signup extends Component {
 							<RkButton
 								onPress={this.onSubmit.bind(this)}
 								rkType="primary large full rounded"
+								style={{backgroundColor : Color.primary}}
 								contentStyle={{ color : '#FFF' }}>
 								DAFTAR
 							</RkButton>
@@ -128,7 +143,7 @@ export default class Signup extends Component {
 							<View style={{marginTop : 20, marginBottom : 40}}>
 								<RkText rkType="primary3">Belum Punya Account?</RkText>
 								<RkButton rkType="clear" onPress={() => this.props.navigation.goBack()}>
-									<RkText rkType="primary6"> Masuk Sekarang </RkText>
+									<RkText rkType="primary6" style={{color : 'red'}}> Masuk Sekarang </RkText>
 								</RkButton>
 							</View>
 						</View>

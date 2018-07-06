@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  View, Text, ScrollView} from 'react-native';
+import {  View, Text, ScrollView, ToastAndroid} from 'react-native';
 import {
 	RkCard, RkTextInput, RkText, RkButton
 } from 'react-native-ui-kitten'
@@ -15,33 +15,42 @@ export default class AccountPage extends Component {
 	  super(props)
 	
 	  this.state = {
-		name : '',
-		email : '',
-		phone : ''
+			name : '',
+			email : '',
+			phone : ''
 	  };
 
 	  this.unsubscriber = null
 	};
 	
 	getInfoAkun() {
-		let cUser = firebase.auth().currentUser
-		if (cUser) {
-			let pData = cUser.providerData[0]
+		let userLogin = firebase.auth().currentUser
+		
+		const cUser = UserDB.child('/' + userLogin.uid)
+		cUser.once('value', (v) => {
+			let pData = v.val()
 			this.setState({
-				name : pData.displayName,
-				phone : pData.phoneNumber,
+				name : pData.name,
+				phone : pData.phone,
 				email : pData.email
 			})
-		}
+		})
 	}
 
 	simpanAkun() {
-		let cUser = firebase.auth().currentUser
+		let userLogin = firebase.auth().currentUser
+		const cUser = UserDB.child('/' + userLogin.uid)
+
 		if (cUser) {
-			let pData = cUser.providerData[0]
-			pData.displayName = this.state.name
-			pData.phoneNumber = this.state.phone
-			pData.email = this.state.email
+			let pData = {
+				name : this.state.name,
+				phone : this.state.phone,
+				email : this.state.email
+			}
+			cUser.update(pData)
+			ToastAndroid.show('Berhasil Edit User', ToastAndroid.SHORT)
+			// this.props.navigation.goBack()
+	
 		}
 	}
 

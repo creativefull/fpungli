@@ -47,9 +47,18 @@ export default class LoginApp extends Component {
 	onLogin() {
 		const {email, password} = this.state
 		if (email != '' && password != '') {
-			Firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, password).then((result) => {
+			Firebase.auth().signInWithEmailAndPassword(email, password).then((result) => {
 				// alert(JSON.stringify(result));
-				this.props.onLogin(true)
+				if (result) {
+					if (result.emailVerified) {
+						this.props.onLogin(true)
+					} else {
+						Firebase.auth().signOut().then(() => {
+							alert('Email Belum Di Verifkasi')
+							this.props.onLogin(false)
+						})
+					}
+				}
 			}).catch((e) => {
 				Alert.alert('Login Gagal', 'Username / Password Tidak Cocok')
 			})
@@ -102,7 +111,13 @@ export default class LoginApp extends Component {
 						<View style={styles.textRow}>
 							<RkText rkType="primary3">Belum Punya Account?</RkText>
 							<RkButton rkType="clear" onPress={() => this.props.navigation.navigate('Signup')}>
-								<RkText rkType="primary6"> Daftar Sekarang </RkText>
+								<RkText rkType="primary6" style={{color : 'red'}}> Daftar Sekarang </RkText>
+							</RkButton>
+						</View>
+						<View style={styles.textRow}>
+							<RkText rkType="primary3">Atau</RkText>
+							<RkButton rkType="clear" onPress={() => this.props.navigation.navigate('ResetPassword')}>
+								<RkText rkType="primary6" style={{color : 'red'}}> Lupa Password </RkText>
 							</RkButton>
 						</View>
 					</View>

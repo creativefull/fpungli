@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  View, Text, ScrollView, ToastAndroid} from 'react-native';
+import {  View, Text, ScrollView, ToastAndroid, Picker} from 'react-native';
 import {
 	RkCard, RkTextInput, RkText, RkButton
 } from 'react-native-ui-kitten'
@@ -14,9 +14,11 @@ export default class AccountPage extends Component {
 	  super(props)
 	
 	  this.state = {
-		name : '',
-		email : '',
-		phone : ''
+			name : '',
+			email : '',
+			phone : '',
+			nik : '',
+			role_group : ''
 	  };
 
 	  this.unsubscriber = null
@@ -29,6 +31,8 @@ export default class AccountPage extends Component {
 		cUser.once('value', (v) => {
 			let pData = v.val()
 			this.setState({
+				nik : pData.nik,
+				role_group : pData.role_group,
 				name : pData.name,
 				phone : pData.phone,
 				email : pData.email
@@ -40,9 +44,11 @@ export default class AccountPage extends Component {
 		const {params} = this.props.navigation.state
 		const cUser = UserDB.child(params.key)
 		let pData = {
+			nik : this.state.nik,
 			name : this.state.name,
 			phone : this.state.phone,
-			email : this.state.email
+			email : this.state.email,
+			role_group : this.state.role_group
 		}
 		cUser.update(pData)
 		ToastAndroid.show('Berhasil Edit User', ToastAndroid.SHORT)
@@ -64,6 +70,12 @@ export default class AccountPage extends Component {
 	  <ScrollView style={{padding : 10}}>
 		<RkCard>
 			<View rkCardContent>
+				<RkText>NIK</RkText>
+				<RkTextInput
+					rkType="rounded"
+					value={this.state.nik}
+					onChangeText={(nik) => this.setState({nik})}/>
+
 				<RkText>Nama</RkText>
 				<RkTextInput
 					rkType="rounded"
@@ -80,6 +92,15 @@ export default class AccountPage extends Component {
 
 				<RkText>Email</RkText>
 				<RkTextInput rkType="rounded" value={this.state.email} onChangeText={(email) => this.setState({email})} keyboardType="email-address"/>
+
+				<RkText>Role Group</RkText>
+				<Picker
+					selectedValue={this.state.role_group}
+					style={{ height: 50, width: 100 }}
+					onValueChange={(role_group, itemIndex) => this.setState({role_group})}>
+					<Picker.Item label="Administrator" value="admin" />
+					<Picker.Item label="User" value="user" />
+				</Picker>
 
 				<RkButton
 					onPress={this.simpanAkun.bind(this)}

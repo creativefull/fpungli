@@ -86,7 +86,7 @@ export default class ManageUser extends Component {
 							rkType='secondary2 inverseColor'>{info.item.role}</RkText>
 
 						<RkText
-							rkType="header4 inverseColor">{'Email : ' + item.phone}</RkText>
+							rkType="header4 inverseColor">{'Email : ' + item.email}</RkText>
 						<RkText
 							rkType="header4 inverseColor">{'Nomor Hp : ' + item.phone}</RkText>
 

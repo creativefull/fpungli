@@ -9,6 +9,7 @@ import {
 } from 'react-native-ui-kitten'
 import firebase from 'react-native-firebase';
 import MapView, { Marker } from 'react-native-maps';
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 const moment = require('moment')
 moment.locale('id')
@@ -29,7 +30,8 @@ RkTheme.setType('RkButton', 'btnAction', {
 
 export default class ArtikelDetail extends Component {
 	static navigationOptions = ({navigation}) => ({
-		title : navigation.state.params.title
+		title : navigation.state.params.title,
+		headerLeft : <Icon name="arrow-left" size={24} style={{marginLeft : 10}} color='#FFF' onPress={() => navigation.goBack()}/>
 	})
 
 	constructor(props) {
@@ -41,10 +43,12 @@ export default class ArtikelDetail extends Component {
 	};
 	
 	getData(id) {
-		firebase.database().ref('/laporan/' + id).on('value', (results) => {
-			this.setState({
-				data : results.val()
-			})
+		firebase.database().ref('/artikel/' + id).on('value', (results) => {
+			if (results.val()) {
+				this.setState({
+					data : results.val()
+				})
+			}
 		})
 	}
 
@@ -59,26 +63,6 @@ export default class ArtikelDetail extends Component {
 	componentDidMount() {
 		const {params} = this.props.navigation.state
 		this.getData(params.id)
-	}
-
-	renderMaps() {
-		const {data} = this.state
-		const {location} = data
-		if (location) {
-			return (
-				<MapView
-					initialRegion={{latitude : location.latitude, longitude : location.longitude, latitudeDelta : 0.002, longitudeDelta : 0.002}}
-					style={{height : 200}}>
-					<Marker coordinate={location}/>
-				</MapView>
-			)	
-		} else {
-			return (
-				<View style={{padding : 10}}>
-					<RkText>Lokasi Tidak Tersedia</RkText>
-				</View>
-			)
-		}
 	}
 
 	renderBtn() {
@@ -116,14 +100,6 @@ export default class ArtikelDetail extends Component {
 	
 						<View style={{padding : 10}}>
 							<RkText rkType='primary3'>{data.diskripsi}</RkText>
-						</View>
-
-						{this.renderMaps()}
-	
-						<View style={{padding : 10, flexDirection : 'row'}}>
-							{this.renderBtn()}
-							<RkButton
-								rkType="danger small btnAction">DITERIMA</RkButton>
 						</View>
 					</RkCard>
 				</ScrollView>

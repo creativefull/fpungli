@@ -11,6 +11,10 @@ import SaveVideo from './saveVideo';
 import {Color} from '../config/theme.json'
 
 class LaporScreen extends Component {
+	static navigationOptions = {
+		title : 'Pilih Laporan'
+	}
+	
 	constructor(props) {
 		super(props)
 	
