@@ -9,6 +9,7 @@ import {
 	RkTheme
 } from 'react-native-ui-kitten';
 import Firebase from 'react-native-firebase';
+import {Color} from '../config/theme.json'
 
 import app from '../config/app';
 
@@ -19,7 +20,7 @@ export default class LoginApp extends Component {
 	constructor(props) {
 	  super(props)
 	  this.state = {
-		  imageHeight : new Animated.Value(100),
+		  imageHeight : new Animated.Value(200),
 		  imageWidth : new Animated.Value(350),
 		  opacityHeader : new Animated.Value(1),
 		  loaded : false,
@@ -46,8 +47,18 @@ export default class LoginApp extends Component {
 	onLogin() {
 		const {email, password} = this.state
 		if (email != '' && password != '') {
-			Firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, password).then((result) => {
-				this.props.onLogin(true)
+			Firebase.auth().signInWithEmailAndPassword(email, password).then((result) => {
+				// alert(JSON.stringify(result));
+				if (result) {
+					if (result.emailVerified) {
+						this.props.onLogin(true)
+					} else {
+						Firebase.auth().signOut().then(() => {
+							alert('Email Belum Di Verifkasi')
+							this.props.onLogin(false)
+						})
+					}
+				}
 			}).catch((e) => {
 				Alert.alert('Login Gagal', 'Username / Password Tidak Cocok')
 			})
@@ -65,8 +76,8 @@ export default class LoginApp extends Component {
 						<Animated.Image
 							style={[styles.image, {width : this.state.imageWidth, height : this.state.imageHeight}]}
 							source={require('../assets/img/logo.png')}/>
-						<Animated.View style={{opacity : this.state.opacityHeader}}>
-							<RkText rkType="light h1">{app.name.toUpperCase()}</RkText>
+						<Animated.View style={{opacity : this.state.opacityHeader, justifyContent : 'center'}}>
+							<RkText rkType="light h1" style={{textAlign : 'center'}}>{app.name.toUpperCase()}</RkText>
 							<RkText rkType="logo h0">{app.description}</RkText>
 						</Animated.View>
 					</Animated.View>
@@ -88,6 +99,7 @@ export default class LoginApp extends Component {
 								<RkButton
 									onPress={this.onLogin.bind(this)}
 									rkType="primary large full rounded"
+									style={{backgroundColor : Color.primary}}
 									contentStyle={{ color : '#FFF' }}>
 									LOGIN
 								</RkButton>
@@ -99,7 +111,13 @@ export default class LoginApp extends Component {
 						<View style={styles.textRow}>
 							<RkText rkType="primary3">Belum Punya Account?</RkText>
 							<RkButton rkType="clear" onPress={() => this.props.navigation.navigate('Signup')}>
-								<RkText rkType="primary6"> Daftar Sekarang </RkText>
+								<RkText rkType="primary6" style={{color : 'red'}}> Daftar Sekarang </RkText>
+							</RkButton>
+						</View>
+						<View style={styles.textRow}>
+							<RkText rkType="primary3">Atau</RkText>
+							<RkButton rkType="clear" onPress={() => this.props.navigation.navigate('ResetPassword')}>
+								<RkText rkType="primary6" style={{color : 'red'}}> Lupa Password </RkText>
 							</RkButton>
 						</View>
 					</View>

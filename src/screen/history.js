@@ -24,7 +24,8 @@ export default class History extends Component {
 	};
 	
 	getData() {
-		HistoryDB.on('value', (value) => {
+		const user = firebase.auth().currentUser
+		HistoryDB.orderByChild('user_id').equalTo(user.uid).on('value', (value) => {
 			let x = []
 			let k = 0
 			value.forEach((v) => {
@@ -41,6 +42,7 @@ export default class History extends Component {
 				k += 1
 			})
 
+			x = x.reverse()
 			this.setState({data : x})
 			// alert(JSON.stringify(x))
 			// let v = value.val()

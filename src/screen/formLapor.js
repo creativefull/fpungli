@@ -5,6 +5,7 @@ import {
 } from 'react-native-ui-kitten'
 import firebase from 'react-native-firebase'
 import {NavigationActions} from 'react-navigation'
+import {Color} from '../config/theme.json'
 
 const HistoryDB = firebase.database().ref('/laporan')
 const {width, height} = Dimensions.get('screen')
@@ -46,9 +47,22 @@ export default class FormLapor extends Component {
 		this.setState({ location, assetLink })
 	}
 
+	sendMessage(data) {
+		let url = 'https://fcm.googleapis.com/fcm/send'
+		fetch(url, {
+			headers : {
+				'Authorization' : 'key=AIzaSyAGnf_KsQFhGF8M0oc7DoXzCqQ6QVtGf8E',
+				'Content-Type' : 'application/json'
+			},
+			method : 'POST',
+			body : JSON.stringify(data)
+		}).then((x) => x.json()).then(console.log)
+	}
+
 	submitLaporan() {
 		let newChild = HistoryDB.push()
 		const {alamat, judul, diskripsi, assetLink, type, location, status, created_at} = this.state
+		const user = firebase.auth().currentUser;
 
 		if (judul == '' && alamat == '') {
 			Alert.alert('Warning', 'Mohon Lengkapi Laporan Anda!')
@@ -61,22 +75,38 @@ export default class FormLapor extends Component {
 				type : type,
 				location : location,
 				status : status,
-				created_at : created_at
+				created_at : created_at,
+				user_id : user.uid
 			})
+			// SEND NOTIFICATION
+			this.sendMessage({
+				topic : 'admin',
+				notification : {
+					'body' : judul,
+					'title' : 'Laporan Masuk',
+				},
+				'to' : '/topics/admin',
+				'data' : {
+					'type' : 'Laporan',
+					'id' : newChild.key,
+					'title' : judul
+				}
+			})	
 
 			Alert.alert('Success', 'Terimakasih Sudah Mengirim Laporan, Kami Segera Menanggapi')
 			const {navigation} = this.props
-			navigation.dispatch(
-				NavigationActions.reset({
-					index : 0,
-					key : null,
-					actions : [
-						NavigationActions.navigate({
-							routeName : 'HomeApp'
-						})
-					]						
-				})
-			)
+			navigation.navigate('MapLocation')
+			// navigation.dispatch(
+			// 	NavigationActions.reset({
+			// 		index : 0,
+			// 		key : null,
+			// 		actions : [
+			// 			NavigationActions.navigate({
+			// 				routeName : 'MapLocation'
+			// 			})
+			// 		]						
+			// 	})
+			// )
 		}
 	}
 
@@ -103,7 +133,7 @@ export default class FormLapor extends Component {
 
 						<RkButton
 							onPress={this.submitLaporan.bind(this)}
-							rkType="rounded full primary xlarge">KIRIM LAPORAN</RkButton>
+							rkType="rounded full xlarge" style={{backgroundColor: Color.primary}}>KIRIM LAPORAN</RkButton>
 					</View>
 				</RkCard>
 			</ScrollView>
